@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EPA Dental — Costo Orario e Target di Crescita</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lato:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blu: #0D2839; --oro: #CFAA5C; --testo: #344054; --testo-sec: #667085;
+    --bordo: #E4E7EC; --bg: #FFFFFF; --bg-sub: #F8F9FA;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--testo); font-family: 'Lato', Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 660px; margin: 0 auto; padding: 40px 24px 64px; }
+  header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; font-size: 12px; color: var(--oro); margin-bottom: 10px; }
+  h1 { font-family: 'Playfair Display', serif; font-weight: 700; color: var(--blu); font-size: 27px; margin: 0 0 10px; line-height: 1.25; }
+  .sub { color: var(--testo-sec); font-size: 15px; line-height: 1.55; max-width: 500px; margin: 0 auto; }
+  .card { border: 1px solid var(--bordo); border-radius: 12px; padding: 28px; background: var(--bg); margin-bottom: 20px; }
+  .section-title {
+    font-family: 'Playfair Display', serif; font-weight: 700; color: var(--blu); font-size: 17px; margin: 0 0 18px;
+  }
+  label { display: block; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--blu); margin-bottom: 6px; }
+  .field { margin-bottom: 18px; }
+  .row2 { display: flex; gap: 16px; }
+  .row2 .field { flex: 1; }
+  select, input[type=number] {
+    width: 100%; font-family: 'Lato', sans-serif; font-size: 15px; color: var(--testo);
+    background: var(--bg); border: 1px solid var(--bordo); border-radius: 8px; padding: 11px 14px;
+  }
+  select:focus, input:focus { outline: none; border-color: var(--oro); }
+  .hint { font-size: 12.5px; color: var(--testo-sec); margin-top: 6px; line-height: 1.5; }
+  .radio-group { display: flex; gap: 10px; }
+  .radio-option {
+    flex: 1; border: 1px solid var(--bordo); border-radius: 8px; padding: 12px; text-align: center;
+    cursor: pointer; font-size: 14px; font-weight: 700; color: var(--testo-sec); transition: all 0.15s ease;
+  }
+  .radio-option.active { border-color: var(--oro); color: var(--blu); background: var(--bg-sub); }
+  .alert {
+    font-size: 14px; font-weight: 700; color: #7A5200; background: #FDECC8; border: 1px solid #E8B93D;
+    border-radius: 8px; padding: 14px 16px; margin-top: 10px; line-height: 1.55; display: none;
+  }
+  .alert.show { display: block; }
+  button.primary {
+    width: 100%; background: var(--blu); color: #FFFFFF; border: none; border-radius: 8px;
+    padding: 14px 18px; font-weight: 700; font-size: 15px; letter-spacing: 0.02em; cursor: pointer; transition: opacity 0.15s ease;
+  }
+  button.primary:hover { opacity: 0.92; }
+  .result { display: none; }
+  .result.show { display: block; }
+  .badge-grezza {
+    display: inline-block; background: #FDECC8; color: #7A5200; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.05em; padding: 3px 9px; border-radius: 5px; margin-left: 8px;
+  }
+  table.results { width: 100%; border-collapse: collapse; margin-bottom: 4px; }
+  table.results th, table.results td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--bordo); font-size: 14px; }
+  table.results th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--testo-sec); font-weight: 700; }
+  table.results td.num { font-family: 'Playfair Display', serif; font-weight: 700; color: var(--blu); font-size: 16px; }
+  .note-link {
+    font-size: 12.5px; color: var(--testo-sec); background: var(--bg-sub); border-radius: 8px;
+    padding: 10px 12px; margin-top: 10px; line-height: 1.5;
+  }
+  .metrics { display: flex; gap: 12px; margin: 18px 0; flex-wrap: wrap; }
+  .metric-box { flex: 1; min-width: 150px; background: var(--bg-sub); border: 1px solid var(--bordo); border-radius: 10px; padding: 16px; text-align: center; }
+  .metric-box.highlight { border-color: var(--oro); }
+  .metric-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--testo-sec); font-weight: 700; margin-bottom: 6px; }
+  .metric-value { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 22px; color: var(--blu); }
+  .metric-sub { font-size: 12px; color: var(--testo-sec); margin-top: 4px; }
+  .fiscal-warning {
+    background: #FBEAEA; border: 1px solid #E3A0A0; color: #6B1F1F; border-radius: 10px;
+    padding: 20px; font-size: 14px; line-height: 1.6; margin-top: 8px;
+  }
+  .fiscal-warning strong { color: #4A1414; }
+  .cta-box { text-align: center; background: var(--blu); border-radius: 10px; padding: 24px; margin-top: 20px; }
+  .cta-box p { color: #FFFFFF; font-size: 14.5px; margin: 0 0 14px; line-height: 1.5; }
+  .cta-btn { display: inline-block; background: var(--oro); color: var(--blu); font-weight: 700; text-decoration: none; padding: 12px 26px; border-radius: 8px; font-size: 14.5px; }
+  footer { text-align: center; margin-top: 12px; font-size: 12px; color: var(--testo-sec); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">EPA Dental</div>
+    <h1>Costo Orario e Target di Crescita</h1>
+    <p class="sub">Scopri quanto ti costa davvero un'ora di poltrona e quanto devi incassare ogni mese per crescere della percentuale che desideri.</p>
+  </header>
+
+  <div class="card">
+    <div class="section-title">1. I tuoi numeri da inizio anno</div>
+
+    <div class="field">
+      <label for="mese">Mese di riferimento (ultimo mese già chiuso)</label>
+      <select id="mese">
+        <option value="1">Gennaio</option>
+        <option value="2">Febbraio</option>
+        <option value="3">Marzo</option>
+        <option value="4">Aprile</option>
+        <option value="5">Maggio</option>
+        <option value="6">Giugno</option>
+        <option value="7" selected>Luglio</option>
+        <option value="8">Agosto</option>
+        <option value="9">Settembre</option>
+        <option value="10">Ottobre</option>
+        <option value="11">Novembre</option>
+        <option value="12">Dicembre</option>
+      </select>
+      <div class="hint">Usa l'ultimo mese già chiuso e consuntivato quest'anno — non il mese in corso, che ha dati parziali.</div>
+    </div>
+
+    <div class="field">
+      <label for="incassato">Totale incassato Gennaio → mese di riferimento (€)</label>
+      <input type="number" id="incassato" min="0" step="1" placeholder="Es. 350000">
+      <div class="hint">Somma di tutto ciò che è realmente entrato in cassa da inizio anno — non il fatturato. Lo trovi nel riepilogo POS/cassa o nel tuo gestionale, sommando i mesi da gennaio al mese sopra incluso.</div>
+    </div>
+
+    <div class="field">
+      <label>Conosci la suddivisione tra costi fissi e costi variabili del tuo studio?</label>
+      <div class="radio-group">
+        <div class="radio-option active" id="optSi" onclick="setSplitKnown(true)">Sì, la conosco</div>
+        <div class="radio-option" id="optNo" onclick="setSplitKnown(false)">No, ho solo il totale</div>
+      </div>
+    </div>
+
+    <div id="splitKnownFields">
+      <div class="field">
+        <label for="costiFissi">Totale costi fissi Gennaio → mese di riferimento (€)</label>
+        <input type="number" id="costiFissi" min="0" step="1" placeholder="Es. 160000">
+        <div class="hint">Somma cumulativa di affitto, stipendi netti, utenze, canoni software, assicurazioni da inizio anno — costi che paghi a prescindere da quante prestazioni fai. Il tuo commercialista li trova nel bilancino mensile.</div>
+      </div>
+      <div class="field">
+        <label for="costiVariabili">Totale costi variabili Gennaio → mese di riferimento (€)</label>
+        <input type="number" id="costiVariabili" min="0" step="1" placeholder="Es. 190000">
+        <div class="hint">Somma cumulativa di materiali, laboratorio odontotecnico, collaboratori a percentuale da inizio anno — costi che salgono e scendono con l'attività clinica.</div>
+      </div>
+    </div>
+
+    <div id="splitUnknownFields" style="display:none;">
+      <div class="field">
+        <label for="costiTotali">Totale costi Gennaio → mese di riferimento (€)</label>
+        <input type="number" id="costiTotali" min="0" step="1" placeholder="Es. 350000">
+        <div class="hint">Tutto ciò che lo studio ha speso da inizio anno, senza distinzione — affitto, stipendi, materiali, laboratorio, utenze, tutto insieme.</div>
+      </div>
+      <div class="alert show">
+        Non conoscere questa suddivisione non è un dettaglio tecnico: significa che oggi non sai quanto del tuo studio "respira" anche a bocca chiusa (affitto, stipendi, utenze) e quanto invece si muove con l'attività clinica. Il calcolo che segue userà una stima standard di settore (70% costi fissi, 30% variabili), che può discostarsi molto dalla tua realtà specifica. Il numero che otterrai sarà segnalato come stima grezza: utile per orientarti, non per decisioni di prezzo o investimento.
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card">
+    <div class="section-title">2. Ore-poltrona disponibili</div>
+    <div class="row2">
+      <div class="field">
+        <label for="poltrone">Numero poltrone operative</label>
+        <input type="number" id="poltrone" min="1" step="1" value="1">
+      </div>
+      <div class="field">
+        <label for="oreSettimanali">Ore di apertura settimanali (totali)</label>
+        <input type="number" id="oreSettimanali" min="1" step="0.5" placeholder="Es. 40">
+      </div>
+    </div>
+    <div class="hint">Somma le ore di apertura di tutti i giorni della settimana (es. Lun-Ven 8h + Sab 4h = 44). Questa è una stima rapida aggregata: non tiene conto di ferie o chiusure straordinarie — per un calcolo preciso serve il dettaglio giorno per giorno.</div>
+  </div>
+
+  <button class="primary" id="calcBtn" onclick="calcola()">Calcola costo orario e target di crescita</button>
+
+  <div class="result" id="result">
+    <div class="card">
+      <div class="section-title">Costo Orario / Costo al Minuto <span class="badge-grezza" id="badgeGrezza" style="display:none;">Stima grezza</span></div>
+      <table class="results">
+        <tr><th>Metodo</th><th>€ / ora</th><th>€ / minuto</th></tr>
+        <tr><td>Solo Costi Fissi</td><td class="num" id="cfOra">—</td><td class="num" id="cfMin">—</td></tr>
+        <tr><td>Costi Fissi + Variabili</td><td class="num" id="cfcvOra">—</td><td class="num" id="cfcvMin">—</td></tr>
+      </table>
+      <div class="note-link">Usa il valore "Costi Fissi + Variabili — €/minuto" nel <strong>Calcolatore Marginalità</strong> per un calcolo coerente tra i due strumenti.</div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Liquidità Generata dall'Attività</div>
+      <div class="metrics">
+        <div class="metric-box highlight">
+          <div class="metric-label">Liquidità generata Gen → mese di riferimento</div>
+          <div class="metric-value" id="liquiditaGenerata">—</div>
+        </div>
+      </div>
+      <div class="hint">Calcolata come Totale incassato meno Totale costi (fissi + variabili) del periodo. Non è il saldo del tuo conto corrente: quello include anche fidi, residui di anni precedenti o prestiti, che possono "gonfiarlo" senza che sia liquidità realmente generata dall'attività dello studio. Questo numero è quanto lo studio ha davvero prodotto da inizio anno.</div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Obiettivo di Crescita</div>
+      <div class="field">
+        <label for="crescita">Di quanto vuoi crescere rispetto alla tua media mensile attuale? (%)</label>
+        <input type="number" id="crescita" min="0" step="1" value="10" oninput="aggiornaCrescita()">
+      </div>
+      <div class="metrics">
+        <div class="metric-box">
+          <div class="metric-label">Media mensile attuale</div>
+          <div class="metric-value" id="mediaAttuale">—</div>
+        </div>
+        <div class="metric-box highlight">
+          <div class="metric-label">Target incasso mensile</div>
+          <div class="metric-value" id="targetMensile">—</div>
+          <div class="metric-sub" id="differenzaMensile"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fiscal-warning">
+      <strong>Attenzione — questi calcoli non sono una strategia fiscale.</strong><br><br>
+      Questi numeri si basano su ciò che incassi, non su ciò che fiscalmente "produci". IRPEF, IRAP e contributi previdenziali si calcolano su basi imponibili diverse e si liquidano con acconti e saldi che spesso arrivano mesi dopo aver già speso quella liquidità in altro. <strong>Continuare a far crescere gli incassi senza una programmazione fiscale anticipata significa rischiare di ritrovarti, a giugno o a novembre, con un F24 più alto di quanto hai accantonato — e senza più margine per rimediare.</strong> Una strategia di crescita seria cammina sempre insieme a una pianificazione fiscale fatta con il tuo commercialista o un consulente dedicato. Quello che vedi qui sopra è una direzione, non un piano.
+    </div>
+
+    <div class="cta-box">
+      <p>Vuoi trasformare questi numeri in una vera strategia di crescita e programmazione fiscale? Con lo Strategic Check-Up EPA Dental analizziamo la situazione reale del tuo studio, non una stima.</p>
+      <a class="cta-btn" href="mailto:info@epadental.it">Prenota il tuo Strategic Check-Up</a>
+    </div>
+  </div>
+
+  <footer>
+<p>EPA Dental è un'iniziativa specialistica italiana del Charitable Corti Trust.<br>
+Servizi e attività erogati da Annalisa Corti in qualità di Trustee.</p>
+<p class="small">All Rights Reserved. Copyright © 2026 Charitable Corti Trust<br>
+82A James Carter Road, Mildenhall, Suffolk IP28 7DE<br>
+CF 92078130520 (Codice ATECO 99.00.00 – Organizzazioni ed organismi extraterritoriali).</p>
+</footer>
+</div>
+
+<script>
+let splitKnown = true;
+
+function setSplitKnown(known) {
+  splitKnown = known;
+  document.getElementById('optSi').classList.toggle('active', known);
+  document.getElementById('optNo').classList.toggle('active', !known);
+  document.getElementById('splitKnownFields').style.display = known ? 'block' : 'none';
+  document.getElementById('splitUnknownFields').style.display = known ? 'none' : 'block';
+}
+
+let lastMediaAttuale = 0;
+
+function calcola() {
+  const mese = Number(document.getElementById('mese').value);
+  const incassato = Number(document.getElementById('incassato').value) || 0;
+  const poltrone = Number(document.getElementById('poltrone').value) || 1;
+  const oreSettimanali = Number(document.getElementById('oreSettimanali').value) || 0;
+
+  let costiFissi, costiVariabili, grezza = false;
+
+  if (splitKnown) {
+    costiFissi = Number(document.getElementById('costiFissi').value) || 0;
+    costiVariabili = Number(document.getElementById('costiVariabili').value) || 0;
+  } else {
+    const totale = Number(document.getElementById('costiTotali').value) || 0;
+    costiFissi = totale * 0.70;
+    costiVariabili = totale * 0.30;
+    grezza = true;
+  }
+
+  document.getElementById('badgeGrezza').style.display = grezza ? 'inline-block' : 'none';
+
+  // Ore-poltrona nel periodo: poltrone × ore settimanali × settimane nel periodo (4.33 sett/mese × numero mesi)
+  const settimaneNelPeriodo = mese * 4.33;
+  const orePoltronaTotali = poltrone * oreSettimanali * settimaneNelPeriodo;
+
+  const costoOrarioCF = orePoltronaTotali > 0 ? costiFissi / orePoltronaTotali : 0;
+  const costoOrarioCFCV = orePoltronaTotali > 0 ? (costiFissi + costiVariabili) / orePoltronaTotali : 0;
+
+  document.getElementById('cfOra').textContent = fmtEur(costoOrarioCF);
+  document.getElementById('cfMin').textContent = fmtEur(costoOrarioCF / 60);
+  document.getElementById('cfcvOra').textContent = fmtEur(costoOrarioCFCV);
+  document.getElementById('cfcvMin').textContent = fmtEur(costoOrarioCFCV / 60);
+
+  const liquiditaGenerata = incassato - (costiFissi + costiVariabili);
+  document.getElementById('liquiditaGenerata').textContent = fmtEur(liquiditaGenerata);
+
+  lastMediaAttuale = mese > 0 ? incassato / mese : 0;
+  aggiornaCrescita();
+
+  document.getElementById('result').classList.add('show');
+}
+
+function fmtEur(n) {
+  return isFinite(n) ? ('€ ' + n.toFixed(2)) : '—';
+}
+
+function aggiornaCrescita() {
+  const pct = Number(document.getElementById('crescita').value) || 0;
+  const target = lastMediaAttuale * (1 + pct / 100);
+  const diff = target - lastMediaAttuale;
+  document.getElementById('mediaAttuale').textContent = fmtEur(lastMediaAttuale);
+  document.getElementById('targetMensile').textContent = fmtEur(target);
+  document.getElementById('differenzaMensile').textContent = '+' + fmtEur(diff) + ' al mese';
+}
+</script>
+</body>
+</html>
